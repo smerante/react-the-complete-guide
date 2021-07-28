@@ -3,9 +3,8 @@ import React, { useEffect, useState, useCallback, useMemo, useReducer } from 're
 import IngredientForm from './IngredientForm';
 import IngredientList from './IngredientList';
 import Search from './Search';
-import axios from 'axios';
 import ErrorModal from '../UI/ErrorModal';
-
+import useHttp from '../../hooks/httphook';
 const SET_TYPE = 'SET';
 const ADD_TYPE = 'ADD';
 const DELETE_TYPE = 'DELETE';
@@ -23,90 +22,50 @@ const ingredientReducer = (currentIngredients, action) => {
   }
 }
 
-const SEND_TYPE = 'SEND';
-const RESPONSE_TYPE = 'RESPONSE';
-const ERROR_TYPE = 'ERROR';
-const CLEAR_TYPE = 'ERROR';
-const httpReducer = (httpPrevState, action) => {
-  switch (action.type) {
-    case SEND_TYPE:
-      return { isLoading: true, error: null };
-    case RESPONSE_TYPE:
-      return { ...httpPrevState, isLoading: false };
-    case ERROR_TYPE:
-      return { error: JSON.stringify(action.error), isLoading: false };
-    case CLEAR_TYPE:
-      return { error: null, isLoading: false };
-    default:
-      throw new Error('No Action type defined for default');
-  }
-}
 
 const Ingredients = () => {
 
   const [ingredients, ingredientDispatch] = useReducer(ingredientReducer, []);
-  const [{ isLoading, error }, httpStateDispatch] = useReducer(httpReducer, { isLoading: false, error: false });
-
+  const { isLoading, error, data, config, sendRequest, clearAll } = useHttp();
   // const [isLoading, setIsLoading] = useState(false);
   // const [error, setError] = useState(null);
 
   const [filteredIngredients, setFilteredIngredients] = useState([]);
 
   useEffect(() => {
-    console.warn("Render : ", ingredients);
-  })
-
-  // gets called after and for every render cycle
-  useEffect(() => {
-    httpStateDispatch({ type: SEND_TYPE });
-    axios.get('https://react-hooks-update-5ab13-default-rtdb.firebaseio.com/ingredients.json')
-      .then((res) => {
-        console.warn("got ingredients : ", res);
-        const loadedIngredients = [];
-        if (!!res.data) {
-          Object.keys(res.data).forEach((key) => {
+    if (!!data || !!config) {
+      console.warn('data: ', data, 'config: ', config);
+      switch (config.request) {
+        case 'get':
+          const loadedIngredients = [];
+          Object.keys(data || []).forEach((key) => {
             loadedIngredients.push({
               id: key,
-              title: res.data[key].title,
-              amount: res.data[key].amount,
+              title: data[key].title,
+              amount: data[key].amount,
             })
           });
-        }
-        ingredientDispatch({ type: SET_TYPE, ingredients: loadedIngredients })
-        setFilteredIngredients(loadedIngredients);
-        httpStateDispatch({ type: RESPONSE_TYPE });
+          ingredientDispatch({ type: SET_TYPE, ingredients: loadedIngredients })
+          break;
+        case 'post':
+          ingredientDispatch({ type: ADD_TYPE, ingredient: {id: data.name, ...config.ingredient}})
+          break;
+        case 'delete':
+          ingredientDispatch({ type: DELETE_TYPE, id: config.id })
+          break;
+        default:
+          break;
+      }
+    }
+  }, [data, config])
 
-      })
-      .catch((err) => httpStateDispatch({ type: ERROR_TYPE, error: err.message }))
-  }, []); // Similair to componentDidMount in react component classes
+  useEffect(() => {
+    sendRequest('https://react-hooks-update-5ab13-default-rtdb.firebaseio.com/ingredients.json', 'get');
+  }, [sendRequest]); // Similair to componentDidMount in react component classes
 
   const addIngredientHandler = useCallback(ingredient => {
-    // setIsLoading(true);
-    httpStateDispatch({ type: SEND_TYPE });
-
-    axios.post('https://react-hooks-update-5ab13-default-rtdb.firebaseio.com/ingredients.json', ingredient)
-      .then(
-        (res) => {
-          console.warn("Post success :", res);
-          const newIng = {
-            id: res.data.name,
-            ...ingredient
-          };
-          console.warn("Add ingredient: ", newIng);
-          ingredientDispatch({ type: ADD_TYPE, ingredient: newIng })
-
-          setFilteredIngredients((state) =>
-            [
-              ...state,
-              newIng
-            ]
-          );
-          // setIsLoading(false);
-          httpStateDispatch({ type: RESPONSE_TYPE });
-        }
-      )
-      .catch(err => httpStateDispatch({ type: ERROR_TYPE, error: err.message }));
-  }, []);
+    sendRequest('https://react-hooks-update-5ab13-default-rtdb.firebaseio.com/ingredients.json', 'post', ingredient, {ingredient: ingredient});
+  }, [sendRequest]);
 
   const handleFilterIngredients = useCallback((filter) => {
     console.warn("Handle filter ingredients: ", filter, ingredients);
@@ -114,32 +73,21 @@ const Ingredients = () => {
   }, [ingredients])
 
   const removeIngredientHandler = useCallback(id => {
-    // setIsLoading(true);
-    httpStateDispatch({ type: SEND_TYPE });
-    axios.delete(`https://react-hooks-update-5ab13-default-rtdb.firebaseio.com/ingredients/${id}.json`)
-      .then((res) => {
-        console.warn('Successful delete: ', res);
-        ingredientDispatch({ type: DELETE_TYPE, id: id })
-
-        // setIsLoading(false);
-        httpStateDispatch({ type: RESPONSE_TYPE });
-
-      })
-      .catch((err) => {
-        // setError(`Error deleting ingredient, message: ${err}`);
-        // setIsLoading(false);
-        httpStateDispatch({ type: ERROR_TYPE, error: err.message });
-
-      });
-  }, []);
+    // `https://react-hooks-update-5ab13-default-rtdb.firebaseio.com/ingredients/${id}.json`
+    // ingredientDispatch({ type: DELETE_TYPE, id: id })
+    sendRequest(`https://react-hooks-update-5ab13-default-rtdb.firebaseio.com/ingredients/${id}.json`,
+      'delete',
+      null,
+      { id: id });
+  }, [sendRequest]);
 
   const ingredientList = useMemo(() => {
     return (<IngredientList ingredients={filteredIngredients} onRemoveItem={removeIngredientHandler} />)
   }, [filteredIngredients, removeIngredientHandler]);
 
   const errors = useMemo(() => {
-    return (error && <ErrorModal onClose={() => httpStateDispatch({ type: CLEAR_TYPE })}>{error}</ErrorModal>)
-  }, [error]);
+    return (error && <ErrorModal onClose={clearAll}>{error}</ErrorModal>)
+  }, [error, clearAll]);
   return (
     <div className="App">
 
