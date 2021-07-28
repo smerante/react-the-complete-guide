@@ -1,0 +1,22 @@
+{
+  "name": "react-the-complete-guide",
+  "version": "1.0.0",
+  "description": "# 1. Getting Started: Javascript refresher",
+  "main": "redux-demo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smerante/react-the-complete-guide.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/smerante/react-the-complete-guide/issues"
+  },
+  "homepage": "https://github.com/smerante/react-the-complete-guide#readme",
+  "dependencies": {
+    "redux": "^4.1.0"
+  }
+}
