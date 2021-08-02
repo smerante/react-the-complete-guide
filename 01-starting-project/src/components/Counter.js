@@ -1,7 +1,7 @@
 import classes from './Counter.module.css';
 import './Counter.module.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { INCREMENT_TYPE, DECREMENT_TYPE, TOGGLE_TYPE } from '../store/store'
+import { COUNTER_ACTIONS } from '../store/store'
 
 const CounterFunctional = () => {
 
@@ -9,15 +9,15 @@ const CounterFunctional = () => {
   const dispatch = useDispatch();
 
   const incrementHandler = (amount = 1) => {
-    dispatch({ type: INCREMENT_TYPE, payload: amount });
+    dispatch(COUNTER_ACTIONS.increment(amount));
   }
 
   const decrementHandler = (amount = 1) => {
-    dispatch({ type: DECREMENT_TYPE, payload: amount });
+    dispatch(COUNTER_ACTIONS.decrement(amount));
   }
 
   const toggleCounter = () => {
-    dispatch({ type: TOGGLE_TYPE });
+    dispatch(COUNTER_ACTIONS.toggle());
   }
 
   return (
