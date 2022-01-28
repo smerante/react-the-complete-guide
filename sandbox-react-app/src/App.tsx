@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import AddColorBG from './components/HigherOrderCompTest';
 import './App.scss';
 import PureComponentTest from './components/PureCompTest';
 import PureFunctionalCompTest from './components/PureFunctionalTest';
 import ForwardRefTest, { HOCForwardRefTest } from './components/ForwardRefCompTest';
 
+const ThemeContext = React.createContext('red');
 class HOCTestComp extends React.Component {
   constructor(props: any) {
     super(props);
@@ -15,18 +16,20 @@ class HOCTestComp extends React.Component {
 }
 
 const Child3 = React.forwardRef((props: any, ref3: any) => {
+  const theme = useContext(ThemeContext);
+  console.warn('theme: ', theme);
   return <>
     <p ref={ref3}>
-      Child 3 nested ref
+      Child 3 nested ref. <span>Context: {theme}</span>
     </p>
   </>
 });
-const Child2 =(props: {forwardedRef2: any}) => {
+const Child2 = (props: { forwardedRef2: any }) => {
   return <>
     <Child3 ref={props.forwardedRef2}></Child3>
   </>
 };
-const Child1 =(props: {forwardedRef: any}) => {
+const Child1 = (props: { forwardedRef: any }) => {
   return <>
     <Child2 forwardedRef2={props.forwardedRef}></Child2>
   </>
@@ -42,19 +45,22 @@ function App() {
 
   const hocForwarRef = HOCForwardRefTest(ForwardRefTest, { test: 'hi', hello: 'world', forwardedRef: ref });
 
-  useEffect(()=>{
+  useEffect(() => {
     console.warn('nestedRef: ', nestedRef);
-  },[nestedRef])
+  }, [nestedRef])
 
   return (
     <div className="App">
       {hocForwarRef}
-      <Child1 forwardedRef={nestedRef}></Child1>
+      <ThemeContext.Provider value={"green"}>
+        <Child1 forwardedRef={nestedRef}></Child1>
+      </ThemeContext.Provider>
       <ForwardRefTest ref={buttonRef} />
       <PureComponentTest name={name} />
       <PureFunctionalCompTest hello={'prop'}>
         <p>Child Component</p>
       </PureFunctionalCompTest>
+
 
       {RedBGComp}
     </div>
