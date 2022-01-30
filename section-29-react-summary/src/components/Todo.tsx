@@ -11,6 +11,10 @@ const Todo = (props: { title: string }) => {
         setShowModal(true);
     }
 
+    const closeModalHandler = () => {
+        setShowModal(false);
+    }
+
     return (
         <div className='card'>
             <h2>{props.title}</h2>
@@ -20,8 +24,8 @@ const Todo = (props: { title: string }) => {
             {
                 showModal &&
                 <>
-                    <AreYouSureModal />
-                    <Backdrop />
+                    <AreYouSureModal onCancel={closeModalHandler} onConfirm={closeModalHandler}/>
+                    <Backdrop handleClick={closeModalHandler} />
                 </>
             }
         </div>
