@@ -6,7 +6,8 @@ const MeetupList = (props: { data: Array<any> }) => {
         {props.data.map((meetup) => {
             return <MeetupItem 
             key={meetup.id} 
-            imgSrc={meetup.image} 
+            id={meetup.id} 
+            image={meetup.image} 
             imgAlt=''
             title={meetup.title}
             description={meetup.description}
