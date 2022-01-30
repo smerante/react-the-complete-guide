@@ -1,4 +1,4 @@
-export const Todo = (props: {title: string}) => {
+const Todo = (props: {title: string}) => {
 
 
     const deleteHandler = () => {
@@ -14,3 +14,5 @@ export const Todo = (props: {title: string}) => {
         </div>
     )
 };
+
+export default Todo;
