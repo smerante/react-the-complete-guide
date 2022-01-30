@@ -4,10 +4,12 @@ import { Route, Switch } from 'react-router-dom';
 import AllMeetupsPage from './pages/AllMeetups';
 import NewMeetupPage from './pages/NewMeetup';
 import FavouritesPage from './pages/Favourites';
+import MainNavigation from './components/layout/MainNavigation';
 
 const App = () => {
   return (
     <div className='App'>
+      <MainNavigation/>
       <Switch>
         <Route path='/' exact>
           <AllMeetupsPage />
