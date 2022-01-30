@@ -2,7 +2,7 @@ import { LegacyRef, RefObject, useRef } from 'react';
 import Card from '../ui/Card';
 import classes from './NewMeetupForm.module.scss';
 
-const NewMeetupForm = () => {
+const NewMeetupForm = (props: {onAddMeetup: (meetupData: any) => void}) => {
 
     const titleInputRef: RefObject<HTMLInputElement> = useRef(null);
     const imageRef: RefObject<HTMLInputElement> = useRef(null);
@@ -20,7 +20,7 @@ const NewMeetupForm = () => {
             address: enteredAddress,
             description: enteredDescription,
         }
-        console.warn(meetupData);
+        props.onAddMeetup(meetupData);
     };
 
     return <Card>
