@@ -8,7 +8,8 @@ body {
   background-color: #dfdfdf;
 }
 
-h1, h2 {
+h1,
+h2 {
   color: #333333;
 }
 
@@ -41,8 +42,12 @@ h1, h2 {
   background-color: white;
   border-radius: 4px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-  padding: 1rem;
-  width: 20rem;
+  padding: 8px;
+  width: 30%;
+  margin: 5px;
+  h2 {
+    margin-top: 0px;
+  }
 }
 
 .actions {

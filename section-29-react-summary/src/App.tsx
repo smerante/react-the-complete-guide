@@ -6,7 +6,9 @@ const App = () => {
   return (
     <div className='App'>
       <h1>My Todos</h1>
-      <Todo/>
+      <Todo title={'Learn React'}/>
+      <Todo title={'Master React'}/>
+      <Todo title={'Explore the full React course'}/>
     </div>
   )
 }
