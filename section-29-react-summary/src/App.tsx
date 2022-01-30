@@ -1,8 +1,6 @@
 import React from 'react';
 import './App.scss';
-import AreYouSureModal from './components/AreYouSureModal';
 import Todo from './components/Todo';
-import Backdrop from './components/Backdrop';
 
 const App = () => {
   return (
@@ -11,8 +9,6 @@ const App = () => {
       <Todo title={'Learn React'} />
       <Todo title={'Master React'} />
       <Todo title={'Explore the full React course'} />
-      <AreYouSureModal/>
-      <Backdrop/>
     </div>
   )
 }
