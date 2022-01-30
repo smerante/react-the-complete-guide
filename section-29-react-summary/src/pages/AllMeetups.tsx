@@ -1,3 +1,5 @@
+import MeetupList from "../components/meetups/MeetupList";
+
 const MOCK_DATA = [
     {
         id: 'm1',
@@ -22,14 +24,7 @@ const AllMeetupsPage = () => {
     return <section>
         <h1>All Meetups</h1>
 
-        <ul>
-            {MOCK_DATA.map((meetup) => {
-                return <li key={meetup.id}>
-                    {meetup.title}
-                    <img src={meetup.image} style={{width: '400px'}}/>
-                </li>
-            })}
-        </ul>
+       <MeetupList data={MOCK_DATA}/>
     </section>
 };
 
