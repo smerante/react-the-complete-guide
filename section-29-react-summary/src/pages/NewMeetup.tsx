@@ -1,7 +1,10 @@
+import { useHistory } from "react-router";
 import NewMeetupForm from "../components/meetups/NewMeetupForm";
 
 const NewMeetupPage = () => {
 
+    const history = useHistory();
+    
     const addMeetupHandler = (data: {
         title: string,
         image: string,
@@ -18,10 +21,10 @@ const NewMeetupPage = () => {
             }
         ).then((res) => {
             console.warn('res: ', res);
-        })
-            .catch(e => {
-                console.error('error: ', e);
-            })
+            history.replace('/');
+        }).catch(e => {
+            console.error('error: ', e);
+        });
     }
     return <section>
         <h1>Add New Meetup</h1>
