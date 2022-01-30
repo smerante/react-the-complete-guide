@@ -5,22 +5,24 @@ import AllMeetupsPage from './pages/AllMeetups';
 import NewMeetupPage from './pages/NewMeetup';
 import FavouritesPage from './pages/Favourites';
 import MainNavigation from './components/layout/MainNavigation';
+import Layout from './components/layout/Layout';
 
 const App = () => {
   return (
     <div className='App'>
-      <MainNavigation/>
-      <Switch>
-        <Route path='/' exact>
-          <AllMeetupsPage />
-        </Route>
-        <Route path='/new-meetup' exact>
-          <NewMeetupPage />
-        </Route>
-        <Route path='/favourites' exact>
-          <FavouritesPage />
-        </Route>
-      </Switch>
+      <Layout>
+        <Switch>
+          <Route path='/' exact>
+            <AllMeetupsPage />
+          </Route>
+          <Route path='/new-meetup' exact>
+            <NewMeetupPage />
+          </Route>
+          <Route path='/favourites' exact>
+            <FavouritesPage />
+          </Route>
+        </Switch>
+      </Layout>
     </div>
   )
 }
